@@ -1,0 +1,99 @@
+/** =======================================================
+-- Create Stored Procedure Template for metrics added to the Aggregate Metrics data model
+
+         PROCEDURE WRITITING NOTES
+
+			-- Keep in mind that metric id, summary level, target id and value date form a clustered index. So, your results MUST return a single row for each combination of metric-summary level - target id - value date
+
+			-- To create a single query that can aggregate on multiple grouping levels, use the GROUP BY GROUPING SETS (CUBE ()) approach. See mart.esp_factAggregateMetric_populate_1 for example. 
+
+
+		 Metric's procedure can return the following columns:
+
+	        metric_id, bigint				
+				--metric_id must match the ID in dimAggregateMetric
+				--CANNOT BE NULL
+
+           summary_level, nvarchar(100)	
+				-- grouping level. Must have a row in dimAggregateMetricSummaryLevel
+				-- CANNOT BE NULL
+
+           target_id, nvarchar(250)
+				-- what's being summarized. Must have an integer ID from a table you join to like dbo.client, or add IDs in dimAggregateTarget
+				-- CANNOT BE NULL
+
+           rpt_date_display, nvarchar(500)
+				-- the same as value_date, but with a formatting string applied for pretty-printing, e.g FOMRAT(date_column, 'MM-dd-yy')
+
+           ,value_numerator, bigint
+				-- An aggregated value
+				-- CANNOT BE NULL
+
+           ,value_denominator, bigint
+				-- optional, if you're creating 
+				-- CAN BE NULL
+
+           ,value_numeric, numeric(18,10)
+				-- if a rate, then NUMERATOR/DENOMINATOR. If no denominator, then just the numerator
+				-- Try to use the same formatting string that you have specified in dimAggregateMetric.value_numeric_format
+				-- CANNOT BE NULL
+
+           ,value_date, datetime
+				-- Use the date the thing was created or completed (i.e if the metric is for cases, use the case open date accounting for adjusted dates)
+				-- CANNOT BE NULL
+
+           ,value_text, nvarchar(max)
+				-- If you want to store a sentence about the value
+				-- CAN BE NULL
+
+           ,meta_data, nvarchar(max)
+				-- If you want to store additional info about the metric that's not in the value_text
+				-- CAN BE NULL
+
+           ,percentile, float
+				-- If you want to store the percentile the row falls into in its summary level
+				-- CAN BE NULL
+
+           ,last_update_dt, datetime
+				--	Use GETDATE() unless if you need something else
+				-- CANNOT BE NULL
+
+-- =======================================================  **/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:      <Author, , Name>
+-- Create Date: <Create Date, , >
+-- Description: <Description, , >
+-- =============================================
+
+-- NOTE: procedure names MUST match dimAggregateMetrics.proc_name for the metric in the format:  [mart].[esp_factAggregateMetric_populate_<metric_id>]
+CREATE OR ALTER PROCEDURE   <Procedure_Name, sysname, ProcedureName>
+
+AS
+BEGIN
+
+    SET NOCOUNT ON;
+
+		-- if the column supports a NULL value, and you dont need it, then remove the column from the list
+		SELECT
+           <metric_id, bigint,>							=
+           ,<summary_level, nvarchar(100),>				=
+           ,<target_id, nvarchar(250),>					=
+           ,<rpt_date_display, nvarchar(500),>			=
+           ,<value_numerator, bigint,>					=
+           ,<value_denominator, bigint,>				=
+           ,<value_numeric, numeric(18,10),>			=
+           ,<value_date, datetime,>						=
+           ,<value_text, nvarchar(max),>				=
+           ,<meta_data, nvarchar(max),>					=
+           ,<percentile, float,>						=
+           ,last_update_dt								= GETDATE()					
+
+		FROM --add your tables, joins and filter conditions
+
+
+END
+GO
